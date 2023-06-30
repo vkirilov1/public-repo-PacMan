@@ -1,0 +1,90 @@
+#navlist {
+  position: relative;
+}
+
+#navlist li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  top: 0;
+}
+
+img {
+  position: absolute;
+  z-index: -1;
+}
+
+#pacman_animation_right_1 {
+  width: 14px;
+  height: 14px;
+  background: url("WholeSheet.webp") -457px 0px;
+}
+#pacman_animation_right_2 {
+  width: 14px;
+  height: 14px;
+  background: url("WholeSheet.webp") -472px 0px;
+}
+
+#pacman_animation_left_1 {
+  width: 14px;
+  height: 14px;
+  background: url("WholeSheet.webp") -457px -15px;
+}
+#pacman_animation_left_2 {
+  width: 14px;
+  height: 14px;
+  background: url("WholeSheet.webp") -473px -15px;
+}
+
+#pacman_animation_up_1 {
+  width: 14px;
+  height: 14px;
+  background: url("WholeSheet.webp") -456px -33px;
+}
+#pacman_animation_up_2 {
+  width: 14px;
+  height: 14px;
+  background: url("WholeSheet.webp") -473px -31px;
+}
+
+#pacman_animation_down_1 {
+  width: 14px;
+  height: 14px;
+  background: url("WholeSheet.webp") -456px -47px;
+}
+#pacman_animation_down_2 {
+  width: 14px;
+  height: 14px;
+  background: url("WholeSheet.webp") -472px -47px;
+}
+
+#game {
+  width: 226px;
+  height: 248px;
+  object-fit: cover;
+  object-position: 0%;
+}
+
+#stylesheet {
+  width: 226px;
+  height: 248px;
+  object-fit: cover;
+  object-position: 100%;
+}
+
+.column {
+  float: left;
+  width: 17.5%;
+  padding: 5px;
+}
+
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+/*.pacman{
+
+}
+*/
