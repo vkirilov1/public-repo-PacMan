@@ -1,31 +1,25 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <link rel="stylesheet" href="style.css" />
-    <title>PacMan</title>
-  </head>
 
-  <body>
-    <h1>PacMan Game:</h1>
-    <div id="pacman_animation_right_1"></div>
-    <div class="row">
-      <div class="column">
-        <img id="game" src="WholeSheet.webp" alt="Error loading image!" />
-      </div>
-      <div class="column">
-        <img id="stylesheet" src="WholeSheet.webp" alt="Error loading sheet!" />
-      </div>
+<head>
+  <link rel="stylesheet" href="style.css" />
+  <title>PacMan</title>
+</head>
+
+<body>
+  <h1>PacMan Game:</h1>
+  <div class="row">
+    <div class="column">
+      <img id="game" src="WholeSheet.webp" alt="Error loading image!" />
     </div>
-    <ul id="navlist">
-      <li id="pacman_animation_right_2"></li>
-      <li id="pacman_animation_left_1"></li>
-      <li id="pacman_animation_left_2"></li>
-      <li id="pacman_animation_up_1"></li>
-      <li id="pacman_animation_up_2"></li>
-      <li id="pacman_animation_down_1"></li>
-      <li id="pacman_animation_down_2"></li>
-      <li id="pacman_coordinates"></li>
-    </ul>
-    <script src="engine.js"></script>
-  </body>
+    <div class="column">
+      <img id="stylesheet" src="WholeSheet.webp" alt="Error loading sheet!" />
+    </div>
+  </div>
+  <div id="pacman"></div>
+  <!--<li id="pacman_coordinates"></li>-->
+  </ul>
+  <script src="engine.js"></script>
+</body>
+
 </html>

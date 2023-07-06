@@ -1,56 +1,49 @@
-#navlist {
-  position: relative;
-}
-
-#navlist li {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  top: 0;
-}
-
-#pacman_animation_right_1 {
-  width: 10px;
+.pacman_animation_right_1 {
+  width: 13px;
   height: 14px;
   background: url("WholeSheet.webp") -457px 0px;
 }
-#pacman_animation_right_2 {
-  width: 10px;
+
+.pacman_animation_right_2 {
+  width: 13px;
   height: 14px;
-  background: url("WholeSheet.webp") -474px 0px;
+  background: url("WholeSheet.webp") -473px 0px;
 }
 
-#pacman_animation_left_1 {
-  width: 10px;
+.pacman_animation_left_1 {
+  width: 13px;
   height: 14px;
-  background: url("WholeSheet.webp") -460px -15px;
-}
-#pacman_animation_left_2 {
-  width: 10px;
-  height: 14px;
-  background: url("WholeSheet.webp") -475px -15px;
+  background: url("WholeSheet.webp") -457px -16px;
 }
 
-#pacman_animation_up_1 {
-  width: 10px;
-  height: 14px;
-  background: url("WholeSheet.webp") -459px -33px;
-}
-#pacman_animation_up_2 {
-  width: 10px;
-  height: 14px;
-  background: url("WholeSheet.webp") -475px -31px;
+.pacman_animation_left_2 {
+  width: 13px;
+  height: 15px;
+  background: url("WholeSheet.webp") -473px -15px;
 }
 
-#pacman_animation_down_1 {
-  width: 10px;
+.pacman_animation_up_1 {
+  width: 13px;
   height: 14px;
-  background: url("WholeSheet.webp") -459px -47px;
+  background: url("WholeSheet.webp") -457px -34px;
 }
-#pacman_animation_down_2 {
-  width: 10px;
+
+.pacman_animation_up_2 {
+  width: 13px;
   height: 14px;
-  background: url("WholeSheet.webp") -475px -47px;
+  background: url("WholeSheet.webp") -473px -32px;
+}
+
+.pacman_animation_down_1 {
+  width: 13px;
+  height: 14px;
+  background: url("WholeSheet.webp") -457px -47px;
+}
+
+.pacman_animation_down_2 {
+  width: 13px;
+  height: 14px;
+  background: url("WholeSheet.webp") -473px -47px;
 }
 
 #game {
