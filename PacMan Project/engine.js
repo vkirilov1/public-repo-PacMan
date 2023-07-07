@@ -212,18 +212,6 @@ function FindMovement(movement) {
       pacman.character.classList.replace(pacman.character.classList[0], 'pacman_animation_down_1');
       setTimeout(() => {pacman.character.classList.replace(pacman.character.classList[0], 'pacman_animation_down_2')}, 150);
     }
-  }, 100)
-}
-
-function PacmanAnimation(type){
-  animation = setTimeout(() => {
-    if(type === "L"){
-      document.getElementById("pacman").classList.add('pacman_animation_left_1');
-      setTimeout(() => { document.getElementById("pacman").classList.replace(document.getElementById("pacman").classList[0], 'pacman_animation_left_2')}, 50);
-    } else if(type === "R"){
-      document.getElementById("pacman").classList.replace(document.getElementById("pacman").classList[0], 'pacman_animation_right_1');
-      setTimeout(() => { document.getElementById("pacman").classList[0] = 'pacman_animation_right_2'}, 150);
-    }
   }, 100);
 }
 
