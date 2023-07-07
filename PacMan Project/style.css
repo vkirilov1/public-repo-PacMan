@@ -46,6 +46,12 @@
   background: url("WholeSheet.webp") -473px -47px;
 }
 
+.darkness {
+  width: 5px;
+  height: 5px;
+  background: url("WholeSheet.webp") -469px -47px
+}
+
 #game {
   width: 226px;
   height: 248px;

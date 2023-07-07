@@ -14,9 +14,10 @@ same operations but with the opposite of the calculation symbol "+" or "-"
 /*Another good way of making the map is finding the coordinates of each wall and then looping through the whole array
 and making the coordinates that are in the list - not traversible a.k.a walls
 */
-function Tile(iswall, hascoin) {
-  this.iswall = iswall;
-  this.hascoin = hascoin;
+function Tile(isWall, hasCoin, hasPowerUp) {
+  this.isWall = isWall;
+  this.hasCoin = hasCoin;
+  this.hasPowerUp = hasPowerUp;
 }
 
 var tiles_array = new Array(41);
@@ -28,8 +29,9 @@ for (var i = 0; i < tiles_array.length; i++) {
 for (var i = 0; i < 41; i++) {
   for (var j = 0; j < 46; j++) {
     const current = new Tile(
-      iswall = 1,
-      hascoin = 0,
+      isWall = 1,
+      hasCoin = 1,
+      hasPowerUp = 0
     );
     tiles_array[i][j] = current;
   }
@@ -44,104 +46,136 @@ function CreateMap(side) {
 
   //Making Up and Down Traversible
   for (var i = 0; i < 15; i++) {
-    tiles_array[static_coordinates[5]][30 - i].iswall = 0;
+    tiles_array[static_coordinates[5]][30 - i].isWall = 0;
   }
   for (var i = 0; i < 36; i++) {
-    tiles_array[static_coordinates[1]][35 - i].iswall = 0;
+    tiles_array[static_coordinates[1]][35 - i].isWall = 0;
   }
   for (var i = 0; i < 6; i++) {
-    tiles_array[static_coordinates[4]][35 - i].iswall = 0;
-    tiles_array[static_coordinates[2]][30 + i].iswall = 0;
-    tiles_array[static_coordinates[3]][35 + i].iswall = 0;
-    tiles_array[static_coordinates[1]][40 - i].iswall = 0;
-    tiles_array[static_coordinates[2]][40 + i].iswall = 0;
-    tiles_array[static_coordinates[4]][45 - i].iswall = 0;
-    tiles_array[static_coordinates[4]][0 + i].iswall = 0;
-    tiles_array[static_coordinates[5]][6 + i].iswall = 0;
-    tiles_array[static_coordinates[4]][11 + i].iswall = 0;
+    tiles_array[static_coordinates[4]][35 - i].isWall = 0;
+    tiles_array[static_coordinates[2]][30 + i].isWall = 0;
+    tiles_array[static_coordinates[3]][35 + i].isWall = 0;
+    tiles_array[static_coordinates[1]][40 - i].isWall = 0;
+    tiles_array[static_coordinates[2]][40 + i].isWall = 0;
+    tiles_array[static_coordinates[4]][45 - i].isWall = 0;
+    tiles_array[static_coordinates[4]][0 + i].isWall = 0;
+    tiles_array[static_coordinates[5]][6 + i].isWall = 0;
+    tiles_array[static_coordinates[4]][11 + i].isWall = 0;
   }
   for (var i = 0; i < 5; i++) {
-    tiles_array[static_coordinates[5]][40 - i].iswall = 0;
+    tiles_array[static_coordinates[5]][40 - i].isWall = 0;
   }
   for (var i = 0; i < 12; i++) {
-    tiles_array[static_coordinates[2]][11 - i].iswall = 0;
+    tiles_array[static_coordinates[2]][11 - i].isWall = 0;
   }
 
   //Making Left and Right Traversible
   if (side === "right") {
     for (var i = 0; i < 13; i++) {
-      tiles_array[static_coordinates[0] + i][35].iswall = 0;
+      tiles_array[static_coordinates[0] + i][35].isWall = 0;
     }
     for (var i = 0; i < 6; i++) {
-      tiles_array[static_coordinates[3] - i][40].iswall = 0;
-      tiles_array[static_coordinates[4] + i][40].iswall = 0;
-      tiles_array[static_coordinates[5] - i][11].iswall = 0;
+      tiles_array[static_coordinates[3] - i][40].isWall = 0;
+      tiles_array[static_coordinates[4] + i][40].isWall = 0;
+      tiles_array[static_coordinates[5] - i][11].isWall = 0;
     }
     for (var i = 0; i < 4; i++) {
-      tiles_array[static_coordinates[2] - i][35].iswall = 0;
-      tiles_array[static_coordinates[3] + i][40].iswall = 0;
+      tiles_array[static_coordinates[2] - i][35].isWall = 0;
+      tiles_array[static_coordinates[3] + i][40].isWall = 0;
     }
     for (var i = 0; i < 19; i++) {
-      tiles_array[static_coordinates[4] + i][30].iswall = 0;
-      tiles_array[static_coordinates[2] - i][0].iswall = 0;
+      tiles_array[static_coordinates[4] + i][30].isWall = 0;
+      tiles_array[static_coordinates[2] - i][0].isWall = 0;
     }
     for (var i = 0; i < 21; i++) {
-      tiles_array[static_coordinates[2] - i][45].iswall = 0;
-      tiles_array[static_coordinates[2] - i][6].iswall = 0;
+      tiles_array[static_coordinates[2] - i][45].isWall = 0;
+      tiles_array[static_coordinates[2] - i][6].isWall = 0;
     }
     for (var i = 0; i < 5; i++) {
-      tiles_array[static_coordinates[5] + i][21].iswall = 0;
+      tiles_array[static_coordinates[5] + i][21].isWall = 0;
     }
     for (var i = 0; i < 9; i++) {
-      tiles_array[static_coordinates[1] + i][21].iswall = 0;
-      tiles_array[static_coordinates[1] + i][11].iswall = 0;
+      tiles_array[static_coordinates[1] + i][21].isWall = 0;
+      tiles_array[static_coordinates[1] + i][11].isWall = 0;
     }
     for (var i = 0; i < 8; i++) {
-      tiles_array[static_coordinates[5] - i][26].iswall = 0;
-      tiles_array[static_coordinates[5] - i][16].iswall = 0;
+      tiles_array[static_coordinates[5] - i][26].isWall = 0;
+      tiles_array[static_coordinates[5] - i][16].isWall = 0;
     }
   } else {
     for (var i = 0; i < 13; i++) {
-      tiles_array[static_coordinates[0] - i][35].iswall = 0;
+      tiles_array[static_coordinates[0] - i][35].isWall = 0;
     }
     for (var i = 0; i < 6; i++) {
-      tiles_array[static_coordinates[3] + i][40].iswall = 0;
-      tiles_array[static_coordinates[4] - i][40].iswall = 0;
-      tiles_array[static_coordinates[5] + i][11].iswall = 0;
+      tiles_array[static_coordinates[3] + i][40].isWall = 0;
+      tiles_array[static_coordinates[4] - i][40].isWall = 0;
+      tiles_array[static_coordinates[5] + i][11].isWall = 0;
     }
     for (var i = 0; i < 4; i++) {
-      tiles_array[static_coordinates[2] + i][35].iswall = 0;
-      tiles_array[static_coordinates[3] - i][40].iswall = 0;
+      tiles_array[static_coordinates[2] + i][35].isWall = 0;
+      tiles_array[static_coordinates[3] - i][40].isWall = 0;
     }
     for (var i = 0; i < 19; i++) {
-      tiles_array[static_coordinates[4] - i][30].iswall = 0;
-      tiles_array[static_coordinates[2] + i][0].iswall = 0;
+      tiles_array[static_coordinates[4] - i][30].isWall = 0;
+      tiles_array[static_coordinates[2] + i][0].isWall = 0;
     }
     for (var i = 0; i < 21; i++) {
-      tiles_array[static_coordinates[2] + i][45].iswall = 0;
-      tiles_array[static_coordinates[2] + i][6].iswall = 0;
+      tiles_array[static_coordinates[2] + i][45].isWall = 0;
+      tiles_array[static_coordinates[2] + i][6].isWall = 0;
     }
     for (var i = 0; i < 5; i++) {
-      tiles_array[static_coordinates[5] - i][21].iswall = 0;
+      tiles_array[static_coordinates[5] - i][21].isWall = 0;
     }
     for (var i = 0; i < 9; i++) {
-      tiles_array[static_coordinates[1] - i][21].iswall = 0;
-      tiles_array[static_coordinates[1] - i][11].iswall = 0;
+      tiles_array[static_coordinates[1] - i][21].isWall = 0;
+      tiles_array[static_coordinates[1] - i][11].isWall = 0;
     }
     for (var i = 0; i < 8; i++) {
-      tiles_array[static_coordinates[5] + i][26].iswall = 0;
-      tiles_array[static_coordinates[5] + i][16].iswall = 0;
+      tiles_array[static_coordinates[5] + i][26].isWall = 0;
+      tiles_array[static_coordinates[5] + i][16].isWall = 0;
     }
   }
 }
 
+function MakeCoins() {
+  for (var i = 0; i < 3; i++) {
+    tiles_array[19 + i][35].hasCoin = 0;
+  }
+  for (var i = 0; i <= 13; i++) {
+    tiles_array[13][16 + i].hasCoin = 0;
+    tiles_array[27][16 + i].hasCoin = 0;
+  }
+  for (var i = 0; i <= 14; i++) {
+    tiles_array[13 + i][16].hasCoin = 0;
+    tiles_array[13 + i][26].hasCoin = 0;
+  }
+  for (var i = 0; i < 4; i++) {
+    tiles_array[27 + i][21].hasCoin = 0;
+  }
+  for (var i = 0; i < 5; i++) {
+    tiles_array[9 + i][21].hasCoin = 0;
+    tiles_array[18][12 + i].hasCoin = 0;
+    tiles_array[22][12 + i].hasCoin = 0;
+  }
+  for (var i = 0; i <= 7; i++) {
+    tiles_array[33 + i][21].hasCoin = 0;
+    tiles_array[0 + i][21].hasCoin = 0;
+  }
+  tiles_array[0][35].hasPowerUp = 1;
+  tiles_array[0][3].hasPowerUp = 1;
+  tiles_array[40][3].hasPowerUp = 1;
+  tiles_array[40][35].hasPowerUp = 1;
+}
+
 //Make PacMan
-function PacMan(speed, character, currentMovement, currentPositionT, currentPositionL) {
+function PacMan(speed, character, currentMovement, currentPositionT, currentPositionL, isPoweredUp, score) {
   this.speed = speed;
   this.character = character;
   this.currentMovement = currentMovement;
   this.currentPositionL = currentPositionL;
   this.currentPositionT = currentPositionT;
+  this.isPoweredUp = isPoweredUp;
+  this.score = score;
 }
 
 const pacman = new PacMan(
@@ -150,7 +184,9 @@ const pacman = new PacMan(
   //Make findMovement("L") later
   currentMovement = FindMovement("I"),
   currentPositionL = 35,
-  currentPositionT = 20
+  currentPositionT = 20,
+  isPoweredUp = false,
+  score = 0
 );
 
 //Make PacMan move
@@ -164,53 +200,117 @@ window.addEventListener("load", () => {
   pacman.character.style.top = 265 + "px";
 });
 
-//let helping_coordinates = document.getElementById("pacman_coordinates");
+let helping_coordinates = document.getElementById("pacman_coordinates");
+let score_id = document.getElementById("pacman_score");
 
 function FindMovement(movement) {
   ongoing = setInterval(() => {
     if (movement === "L") {
-      if (tiles_array[pacman.currentPositionL - 1][pacman.currentPositionT].iswall == 0) {
-        pacman.character.style.left = parseInt(pacman.character.style.left) - pacman.speed + "px";
-        pacman.currentPositionL -= 1;
-      }
-      if (pacman.currentPositionL == 0 && pacman.currentPositionT == 21) {
-        pacman.currentPositionL = 40;
-        pacman.currentPositionT = 21;
-        pacman.character.style.left = 220 + "px";
-        pacman.character.style.top = 195 + "px";
-      }
-      pacman.character.classList.replace(pacman.character.classList[0], 'pacman_animation_left_1');
-      setTimeout(() => {pacman.character.classList.replace(pacman.character.classList[0], 'pacman_animation_left_2')}, 150);
+      if (pacman.currentPositionL != 0) {
+        if (tiles_array[pacman.currentPositionL - 1][pacman.currentPositionT].isWall == 0) {
+          pacman.character.style.left = parseInt(pacman.character.style.left) - pacman.speed + "px";
+          pacman.currentPositionL -= 1;
+          if (tiles_array[pacman.currentPositionL][pacman.currentPositionT].hasCoin == 1) {
+            pacman.score += 10;
+            tiles_array[pacman.currentPositionL][pacman.currentPositionT].hasCoin = 0;
+          }
+          if (tiles_array[pacman.currentPositionL][pacman.currentPositionT].hasPowerUp == 1) {
+            pacman.isPoweredUp = true;
+            tiles_array[pacman.currentPositionL][pacman.currentPositionT].hasPowerUp == 0;
+            //Make timer in which Pacman is powered up and then make pacman.isPoweredUp false!!
+          }
+        }
+        if (pacman.currentPositionL == 0 && pacman.currentPositionT == 21) {
+          pacman.currentPositionL = 40;
+          pacman.currentPositionT = 21;
+          pacman.character.style.left = 220 + "px";
+          pacman.character.style.top = 195 + "px";
+        }
+        pacman.character.classList.replace(pacman.character.classList[0], 'pacman_animation_left_1');
+        setTimeout(() => {
+          pacman.character.classList.replace(pacman.character.classList[0], 'pacman_animation_left_2')
+        }, 150);
 
+        score_id.innerHTML = "Score: " + pacman.score;
+        helping_coordinates.innerHTML = pacman.currentPositionT + "|" + pacman.currentPositionL;
+      }
     } else if (movement === "R") {
-      if (tiles_array[pacman.currentPositionL + 1][pacman.currentPositionT].iswall == 0) {
-        pacman.character.style.left = parseInt(pacman.character.style.left) + pacman.speed + "px";
-        pacman.currentPositionL += 1;
-      }
-      if (pacman.currentPositionL == 40 && pacman.currentPositionT == 21) {
-        pacman.currentPositionL = 0;
-        pacman.currentPositionT = 21;
-        pacman.character.style.left = 20 + "px";
-        pacman.character.style.top = 195 + "px";
-      }
-      pacman.character.classList.replace(pacman.character.classList[0], 'pacman_animation_right_1');
-      setTimeout(() => {pacman.character.classList.replace(pacman.character.classList[0], 'pacman_animation_right_2')}, 150);
+      if (pacman.currentPositionL != 40) {
+        if (tiles_array[pacman.currentPositionL + 1][pacman.currentPositionT].isWall == 0) {
+          pacman.character.style.left = parseInt(pacman.character.style.left) + pacman.speed + "px";
+          pacman.currentPositionL += 1;
+          if (tiles_array[pacman.currentPositionL][pacman.currentPositionT].hasCoin == 1) {
+            pacman.score += 10;
+            tiles_array[pacman.currentPositionL][pacman.currentPositionT].hasCoin = 0;
+          }
+          if (tiles_array[pacman.currentPositionL][pacman.currentPositionT].hasPowerUp == 1) {
+            pacman.isPoweredUp = true;
+            tiles_array[pacman.currentPositionL][pacman.currentPositionT].hasPowerUp == 0;
+            //Make timer in which Pacman is powered up and then make pacman.isPoweredUp false!!
+          }
+        }
+        if (pacman.currentPositionL == 40 && pacman.currentPositionT == 21) {
+          pacman.currentPositionL = 0;
+          pacman.currentPositionT = 21;
+          pacman.character.style.left = 20 + "px";
+          pacman.character.style.top = 195 + "px";
+        }
+        pacman.character.classList.replace(pacman.character.classList[0], 'pacman_animation_right_1');
+        setTimeout(() => {
+          pacman.character.classList.replace(pacman.character.classList[0], 'pacman_animation_right_2')
+        }, 150);
 
+        score_id.innerHTML = "Score: " + pacman.score;
+        helping_coordinates.innerHTML = pacman.currentPositionT + "|" + pacman.currentPositionL;
+
+      }
     } else if (movement === "U") {
-      if (tiles_array[pacman.currentPositionL][pacman.currentPositionT - 1].iswall == 0) {
-        pacman.character.style.top = parseInt(pacman.character.style.top) - pacman.speed + "px";
-        pacman.currentPositionT -= 1;
-      }
-      pacman.character.classList.replace(pacman.character.classList[0], 'pacman_animation_up_1');
-      setTimeout(() => {pacman.character.classList.replace(pacman.character.classList[0], 'pacman_animation_up_2')}, 150);
+      if (pacman.currentPositionT != 0) {
+        if (tiles_array[pacman.currentPositionL][pacman.currentPositionT - 1].isWall == 0) {
+          pacman.character.style.top = parseInt(pacman.character.style.top) - pacman.speed + "px";
+          pacman.currentPositionT -= 1;
+          if (tiles_array[pacman.currentPositionL][pacman.currentPositionT].hasCoin == 1) {
+            pacman.score += 10;
+            tiles_array[pacman.currentPositionL][pacman.currentPositionT].hasCoin = 0;
+          }
+          if (tiles_array[pacman.currentPositionL][pacman.currentPositionT].hasPowerUp == 1) {
+            pacman.isPoweredUp = true;
+            tiles_array[pacman.currentPositionL][pacman.currentPositionT].hasPowerUp == 0;
+            //Make timer in which Pacman is powered up and then make pacman.isPoweredUp false!!
+          }
+        }
+        pacman.character.classList.replace(pacman.character.classList[0], 'pacman_animation_up_1');
+        setTimeout(() => {
+          pacman.character.classList.replace(pacman.character.classList[0], 'pacman_animation_up_2')
+        }, 150);
 
-    } else if (movement === "D") {
-      if (tiles_array[pacman.currentPositionL][pacman.currentPositionT + 1].iswall == 0) {
-        pacman.character.style.top = parseInt(pacman.character.style.top) + pacman.speed + "px";
-        pacman.currentPositionT += 1;
+        score_id.innerHTML = "Score: " + pacman.score;
+        helping_coordinates.innerHTML = pacman.currentPositionT + "|" + pacman.currentPositionL;
+
       }
-      pacman.character.classList.replace(pacman.character.classList[0], 'pacman_animation_down_1');
-      setTimeout(() => {pacman.character.classList.replace(pacman.character.classList[0], 'pacman_animation_down_2')}, 150);
+    } else if (movement === "D") {
+      if (pacman.currentPositionT != 45) {
+        if (tiles_array[pacman.currentPositionL][pacman.currentPositionT + 1].isWall == 0) {
+          pacman.character.style.top = parseInt(pacman.character.style.top) + pacman.speed + "px";
+          pacman.currentPositionT += 1;
+          if (tiles_array[pacman.currentPositionL][pacman.currentPositionT].hasCoin == 1) {
+            pacman.score += 10;
+            tiles_array[pacman.currentPositionL][pacman.currentPositionT].hasCoin = 0;
+          }
+          if (tiles_array[pacman.currentPositionL][pacman.currentPositionT].hasPowerUp == 1) {
+            pacman.isPoweredUp = true;
+            tiles_array[pacman.currentPositionL][pacman.currentPositionT].hasPowerUp == 0;
+            //Make timer in which Pacman is powered up and then make pacman.isPoweredUp false!!
+          }
+        }
+        pacman.character.classList.replace(pacman.character.classList[0], 'pacman_animation_down_1');
+        setTimeout(() => {
+          pacman.character.classList.replace(pacman.character.classList[0], 'pacman_animation_down_2')
+        }, 150);
+
+        score_id.innerHTML = "Score: " + pacman.score;
+        helping_coordinates.innerHTML = pacman.currentPositionT + "|" + pacman.currentPositionL;
+      }
     }
   }, 100);
 }
@@ -248,4 +348,5 @@ function Movement() {
 
 CreateMap("right");
 CreateMap("left");
+MakeCoins();
 Movement();
