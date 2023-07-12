@@ -46,10 +46,100 @@
   background: url("WholeSheet.webp") -473px -47px;
 }
 
-.darkness {
-  width: 5px;
-  height: 5px;
-  background: url("WholeSheet.webp") -469px -47px
+.red_right {
+  width: 13px;
+  height: 14px;
+  background: url("WholeSheet.webp") -457px -65px;
+}
+
+.pink_right {
+  width: 13px;
+  height: 14px;
+  background: url("WholeSheet.webp") -457px -81px;
+}
+
+.blue_right {
+  width: 13px;
+  height: 14px;
+  background: url("WholeSheet.webp") -457px -97px;
+}
+
+.orange_right {
+  width: 13px;
+  height: 14px;
+  background: url("WholeSheet.webp") -457px -113px;
+}
+
+.red_left {
+  width: 13px;
+  height: 14px;
+  background: url("WholeSheet.webp") -489px -65px;
+}
+
+.pink_left {
+  width: 13px;
+  height: 14px;
+  background: url("WholeSheet.webp") -489px -81px;
+}
+
+.blue_left {
+  width: 13px;
+  height: 14px;
+  background: url("WholeSheet.webp") -489px -97px;
+}
+
+.orange_left {
+  width: 13px;
+  height: 14px;
+  background: url("WholeSheet.webp") -489px -113px;
+}
+
+.red_up {
+  width: 13px;
+  height: 14px;
+  background: url("WholeSheet.webp") -521px -65px;
+}
+
+.pink_up {
+  width: 13px;
+  height: 14px;
+  background: url("WholeSheet.webp") -521px -81px;
+}
+
+.blue_up {
+  width: 13px;
+  height: 14px;
+  background: url("WholeSheet.webp") -521px -97px;
+}
+
+.orange_up {
+  width: 13px;
+  height: 14px;
+  background: url("WholeSheet.webp") -521px -113px;
+}
+
+.red_down {
+  width: 13px;
+  height: 14px;
+  background: url("WholeSheet.webp") -553px -65px;
+}
+
+.pink_down {
+  width: 13px;
+  height: 14px;
+  background: url("WholeSheet.webp") -553px -81px;
+}
+
+.blue_down {
+  width: 13px;
+  height: 14px;
+  background: url("WholeSheet.webp") -553px -97px;
+}
+
+.orange_down {
+  width: 13px;
+  height: 14px;
+  background: url("WholeSheet.webp") -553px -113px;
 }
 
 #game {
@@ -58,6 +148,7 @@
   z-index: -1;
   object-fit: cover;
   object-position: 0%;
+  position:absolute;
 }
 
 #stylesheet {
@@ -67,6 +158,19 @@
   object-fit: cover;
   object-position: 100%;
 }
+
+/*#emptyMap{
+  width: 226px;
+  height: 248px;
+  object-fit: cover;
+}
+
+#coin{
+  width: 3px;
+  height: 3px;
+  background: url("WholeSheet.webp") -10.5px -10.5px;
+}
+*/
 
 .column {
   float: left;

@@ -14,6 +14,14 @@ same operations but with the opposite of the calculation symbol "+" or "-"
 /*Another good way of making the map is finding the coordinates of each wall and then looping through the whole array
 and making the coordinates that are in the list - not traversible a.k.a walls
 */
+/*Ways of making the coins vanish from the map after pacman has taken them:
+1.We can put the empty map as an image under the image of the original map and after pacman moves
+through the original map, at the same time this certain part of the map get overlayed by the empty map underneath
+creating the effect of "taking the coins". This way makes pacman work like an "eraser".
+2.Making pacman leave a trail that is the same color as the spaces between the coins so it draws over them.
+3.Making each coin an object and placing it on the map and after pacman goes through the coin, its display property in css
+goes "hidden".
+*/
 function Tile(isWall, hasCoin, hasPowerUp) {
   this.isWall = isWall;
   this.hasCoin = hasCoin;
@@ -168,12 +176,12 @@ function MakeCoins() {
 }
 
 //Make PacMan
-function PacMan(speed, character, currentMovement, currentPositionT, currentPositionL, isPoweredUp, score) {
+function PacMan(speed, character, currentMovement, currentPositionY, currentPositionX, isPoweredUp, score) {
   this.speed = speed;
   this.character = character;
   this.currentMovement = currentMovement;
-  this.currentPositionL = currentPositionL;
-  this.currentPositionT = currentPositionT;
+  this.currentPositionY = currentPositionY;
+  this.currentPositionX = currentPositionX;
   this.isPoweredUp = isPoweredUp;
   this.score = score;
 }
@@ -181,13 +189,145 @@ function PacMan(speed, character, currentMovement, currentPositionT, currentPosi
 const pacman = new PacMan(
   speed = 5,
   character = document.getElementById("pacman"),
-  //Make findMovement("L") later
-  currentMovement = FindMovement("I"),
-  currentPositionL = 35,
-  currentPositionT = 20,
+  //Make MovementLogic("L") later
+  currentMovement = MovementLogic("I"),
+  currentPositionY = 35,
+  currentPositionX = 20,
   isPoweredUp = false,
   score = 0
 );
+
+//Make in-game timer
+var minutes = document.getElementById("minutes");
+var seconds = document.getElementById("seconds");
+
+var counter = 0;
+setInterval(setTime, 1000);
+
+function setTime() {
+  counter++;
+  if (counter % 60 < 10) {
+    seconds.innerHTML = "0" + counter % 60;
+  } else {
+    seconds.innerHTML = counter % 60;
+  }
+  if (Math.floor(counter / 60) < 10) {
+    minutes.innerHTML = "0" + Math.floor(counter / 60);
+  } else {
+    minutes.innerHTML = Math.floor(counter / 60);
+  }
+}
+
+//Make Ghosts
+function Ghost(speed, character, color, currentPositionY, currentPositionX, gotPacman) {
+  this.speed = speed;
+  this.character = character;
+  this.color = color;
+  this.currentPositionY = currentPositionY;
+  this.currentPositionX = currentPositionX;
+  this.gotPacman = gotPacman;
+}
+
+var ghosts_array = new Array(4);
+
+const red = new Ghost(
+  speed = 5,
+  character = document.getElementById("red_ghost"),
+  color = "red",
+  currentPositionY = 16,
+  currentPositionX = 20,
+  gotPacman = false
+);
+
+const pink = new Ghost(
+  speed = 5,
+  character = document.getElementById("pink_ghost"),
+  color = "pink",
+  currentPositionY = 16,
+  currentPositionX = 20,
+  gotPacman = false
+);
+
+const blue = new Ghost(
+  speed = 5,
+  character = document.getElementById("blue_ghost"),
+  color = "blue",
+  currentPositionY = 16,
+  currentPositionX = 20,
+  gotPacman = false
+);
+
+const orange = new Ghost(
+  speed = 5,
+  character = document.getElementById("orange_ghost"),
+  color = "orange",
+  currentPositionY = 16,
+  currentPositionX = 20,
+  gotPacman = false
+);
+
+ghosts_array[0] = red;
+ghosts_array[1] = pink;
+ghosts_array[2] = blue;
+ghosts_array[3] = orange;
+
+//Make Ghost Logic and Movement
+var pacman_positionX;
+var pacman_positionY;
+
+/*function RedMovement(ghost) {
+  pacman_positionX = pacman.currentPositionX;
+  pacman_positionY = pacman.currentPositionY;
+
+  if (Math.abs(pacman_positionX - ghost.currentPositionX) < Math.abs(pacman_positionY - ghost.currentPositionY)) {
+    bestMove("x", pacman_positionX, pacman_positionY, ghost.currentPositionX, ghost.currentPositionY);
+  } else {
+    bestMove("y", pacman_positionY, pacman_positionX, ghost.currentPositionY, ghost.currentPositionX);
+  }
+}
+
+function bestMove(side, pacman_major, pacman_minor, major, minor) {
+  let bestResult = -Infinity;
+  let move;
+  let travelSide;
+  if (side === "x") {
+    if (pacman_major - major == 0) {
+      travelSide = 0;
+    } else {
+      travelSide = (pacman_major - major) / Math.abs(pacman_major - major);
+    }
+    if (tiles_array[major + travelSide][minor].isWall == 1) {
+      travelSide = (pacman_minor - minor) / Math.abs(pacman_minor - minor);
+      let result = minimax(travelSide);
+      if (result > bestResult) {
+        bestResult = result;
+        //move = {major, minor + travelSide};
+      }
+    } else {
+      if (result > bestResult) {
+        bestResult = result;
+        move = {}
+      }
+      let result = minimax(travelSide);
+    }
+  } else {
+    if (pacman_major - major == 0) {
+      travelSide = 0;
+    } else {
+      travelSide = (pacman_major - major) / Math.abs(pacman_major - major);
+    }
+    if (tiles_array[minor][major + travelSide].isWall == 1) {
+      travelSide = (pacman_minor - minor) / Math.abs(pacman_minor - minor);
+      //let result = minimax(travelSide);
+    } else {
+      //let result = minimax(travelSide);
+    }
+  }
+}
+
+function minimax(travel, depth, isMaximizing){
+
+}*/
 
 //Make PacMan move
 var ongoing;
@@ -198,31 +338,34 @@ window.addEventListener("load", () => {
   pacman.character.style.position = "absolute";
   pacman.character.style.left = 120 + "px";
   pacman.character.style.top = 265 + "px";
+  red.character.style.position = "absolute";
+  red.character.style.left = 120 + "px";
+  red.character.style.top = 170 + "px";
 });
 
 let helping_coordinates = document.getElementById("pacman_coordinates");
 let score_id = document.getElementById("pacman_score");
 
-function FindMovement(movement) {
+function MovementLogic(movement) {
   ongoing = setInterval(() => {
     if (movement === "L") {
-      if (pacman.currentPositionL != 0) {
-        if (tiles_array[pacman.currentPositionL - 1][pacman.currentPositionT].isWall == 0) {
+      if (pacman.currentPositionX != 0) {
+        if (tiles_array[pacman.currentPositionX - 1][pacman.currentPositionY].isWall == 0) {
           pacman.character.style.left = parseInt(pacman.character.style.left) - pacman.speed + "px";
-          pacman.currentPositionL -= 1;
-          if (tiles_array[pacman.currentPositionL][pacman.currentPositionT].hasCoin == 1) {
+          pacman.currentPositionX -= 1;
+          if (tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasCoin == 1) {
             pacman.score += 10;
-            tiles_array[pacman.currentPositionL][pacman.currentPositionT].hasCoin = 0;
+            tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasCoin = 0;
           }
-          if (tiles_array[pacman.currentPositionL][pacman.currentPositionT].hasPowerUp == 1) {
+          if (tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasPowerUp == 1) {
             pacman.isPoweredUp = true;
-            tiles_array[pacman.currentPositionL][pacman.currentPositionT].hasPowerUp == 0;
+            tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasPowerUp == 0;
             //Make timer in which Pacman is powered up and then make pacman.isPoweredUp false!!
           }
         }
-        if (pacman.currentPositionL == 0 && pacman.currentPositionT == 21) {
-          pacman.currentPositionL = 40;
-          pacman.currentPositionT = 21;
+        if (pacman.currentPositionX == 0 && pacman.currentPositionY == 21) {
+          pacman.currentPositionX = 40;
+          pacman.currentPositionY = 21;
           pacman.character.style.left = 220 + "px";
           pacman.character.style.top = 195 + "px";
         }
@@ -232,26 +375,26 @@ function FindMovement(movement) {
         }, 150);
 
         score_id.innerHTML = "Score: " + pacman.score;
-        helping_coordinates.innerHTML = pacman.currentPositionT + "|" + pacman.currentPositionL;
+        helping_coordinates.innerHTML = pacman.currentPositionY + "|" + pacman.currentPositionX;
       }
     } else if (movement === "R") {
-      if (pacman.currentPositionL != 40) {
-        if (tiles_array[pacman.currentPositionL + 1][pacman.currentPositionT].isWall == 0) {
+      if (pacman.currentPositionX != 40) {
+        if (tiles_array[pacman.currentPositionX + 1][pacman.currentPositionY].isWall == 0) {
           pacman.character.style.left = parseInt(pacman.character.style.left) + pacman.speed + "px";
-          pacman.currentPositionL += 1;
-          if (tiles_array[pacman.currentPositionL][pacman.currentPositionT].hasCoin == 1) {
+          pacman.currentPositionX += 1;
+          if (tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasCoin == 1) {
             pacman.score += 10;
-            tiles_array[pacman.currentPositionL][pacman.currentPositionT].hasCoin = 0;
+            tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasCoin = 0;
           }
-          if (tiles_array[pacman.currentPositionL][pacman.currentPositionT].hasPowerUp == 1) {
+          if (tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasPowerUp == 1) {
             pacman.isPoweredUp = true;
-            tiles_array[pacman.currentPositionL][pacman.currentPositionT].hasPowerUp == 0;
+            tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasPowerUp == 0;
             //Make timer in which Pacman is powered up and then make pacman.isPoweredUp false!!
           }
         }
-        if (pacman.currentPositionL == 40 && pacman.currentPositionT == 21) {
-          pacman.currentPositionL = 0;
-          pacman.currentPositionT = 21;
+        if (pacman.currentPositionX == 40 && pacman.currentPositionY == 21) {
+          pacman.currentPositionX = 0;
+          pacman.currentPositionY = 21;
           pacman.character.style.left = 20 + "px";
           pacman.character.style.top = 195 + "px";
         }
@@ -261,21 +404,21 @@ function FindMovement(movement) {
         }, 150);
 
         score_id.innerHTML = "Score: " + pacman.score;
-        helping_coordinates.innerHTML = pacman.currentPositionT + "|" + pacman.currentPositionL;
+        helping_coordinates.innerHTML = pacman.currentPositionY + "|" + pacman.currentPositionX;
 
       }
     } else if (movement === "U") {
-      if (pacman.currentPositionT != 0) {
-        if (tiles_array[pacman.currentPositionL][pacman.currentPositionT - 1].isWall == 0) {
+      if (pacman.currentPositionY != 0) {
+        if (tiles_array[pacman.currentPositionX][pacman.currentPositionY - 1].isWall == 0) {
           pacman.character.style.top = parseInt(pacman.character.style.top) - pacman.speed + "px";
-          pacman.currentPositionT -= 1;
-          if (tiles_array[pacman.currentPositionL][pacman.currentPositionT].hasCoin == 1) {
+          pacman.currentPositionY -= 1;
+          if (tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasCoin == 1) {
             pacman.score += 10;
-            tiles_array[pacman.currentPositionL][pacman.currentPositionT].hasCoin = 0;
+            tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasCoin = 0;
           }
-          if (tiles_array[pacman.currentPositionL][pacman.currentPositionT].hasPowerUp == 1) {
+          if (tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasPowerUp == 1) {
             pacman.isPoweredUp = true;
-            tiles_array[pacman.currentPositionL][pacman.currentPositionT].hasPowerUp == 0;
+            tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasPowerUp == 0;
             //Make timer in which Pacman is powered up and then make pacman.isPoweredUp false!!
           }
         }
@@ -285,21 +428,21 @@ function FindMovement(movement) {
         }, 150);
 
         score_id.innerHTML = "Score: " + pacman.score;
-        helping_coordinates.innerHTML = pacman.currentPositionT + "|" + pacman.currentPositionL;
+        helping_coordinates.innerHTML = pacman.currentPositionY + "|" + pacman.currentPositionX;
 
       }
     } else if (movement === "D") {
-      if (pacman.currentPositionT != 45) {
-        if (tiles_array[pacman.currentPositionL][pacman.currentPositionT + 1].isWall == 0) {
+      if (pacman.currentPositionY != 45) {
+        if (tiles_array[pacman.currentPositionX][pacman.currentPositionY + 1].isWall == 0) {
           pacman.character.style.top = parseInt(pacman.character.style.top) + pacman.speed + "px";
-          pacman.currentPositionT += 1;
-          if (tiles_array[pacman.currentPositionL][pacman.currentPositionT].hasCoin == 1) {
+          pacman.currentPositionY += 1;
+          if (tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasCoin == 1) {
             pacman.score += 10;
-            tiles_array[pacman.currentPositionL][pacman.currentPositionT].hasCoin = 0;
+            tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasCoin = 0;
           }
-          if (tiles_array[pacman.currentPositionL][pacman.currentPositionT].hasPowerUp == 1) {
+          if (tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasPowerUp == 1) {
             pacman.isPoweredUp = true;
-            tiles_array[pacman.currentPositionL][pacman.currentPositionT].hasPowerUp == 0;
+            tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasPowerUp == 0;
             //Make timer in which Pacman is powered up and then make pacman.isPoweredUp false!!
           }
         }
@@ -309,9 +452,10 @@ function FindMovement(movement) {
         }, 150);
 
         score_id.innerHTML = "Score: " + pacman.score;
-        helping_coordinates.innerHTML = pacman.currentPositionT + "|" + pacman.currentPositionL;
+        helping_coordinates.innerHTML = pacman.currentPositionY + "|" + pacman.currentPositionX;
       }
     }
+    //RedMovement(ghosts_array[0]);
   }, 100);
 }
 
@@ -322,25 +466,25 @@ function Movement() {
       case "ArrowLeft":
         clearInterval(ongoing);
         pacman.currentAnimation = pacman.character.classList.replace(current_element, 'pacman_animation_left_1');
-        pacman.currentMovement = FindMovement("L");
+        pacman.currentMovement = MovementLogic("L");
         break;
 
       case "ArrowRight":
         clearInterval(ongoing);
         pacman.currentAnimation = pacman.character.classList.replace(current_element, 'pacman_animation_right_1');
-        pacman.currentMovement = FindMovement("R");
+        pacman.currentMovement = MovementLogic("R");
         break;
 
       case "ArrowUp":
         clearInterval(ongoing);
         pacman.currentAnimation = pacman.character.classList.replace(current_element, 'pacman_animation_up_1');
-        pacman.currentMovement = FindMovement("U");
+        pacman.currentMovement = MovementLogic("U");
         break;
 
       case "ArrowDown":
         clearInterval(ongoing);
         pacman.currentAnimation = pacman.character.classList.replace(current_element, 'pacman_animation_down_1');
-        pacman.currentMovement = FindMovement("D");
+        pacman.currentMovement = MovementLogic("D");
         break;
     }
   });
