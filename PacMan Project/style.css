@@ -145,10 +145,10 @@
 #game {
   width: 226px;
   height: 248px;
-  z-index: -1;
+  z-index: 0;
   object-fit: cover;
   object-position: 0%;
-  position:absolute;
+  position: absolute;
 }
 
 #stylesheet {

@@ -175,6 +175,19 @@ function MakeCoins() {
   tiles_array[40][35].hasPowerUp = 1;
 }
 
+//Get the accessible coordinates for later use for the ghosts
+let non_wall_tiles = [];
+
+function AccessibleCoordinatesArray() {
+  for (var i = 0; i < 41; i++) {
+    for (var j = 0; j < 46; j++) {
+      if (tiles_array[i][j].isWall == 0) {
+        non_wall_tiles.push(i + "|" + j);
+      }
+    }
+  }
+}
+
 //Make PacMan
 function PacMan(speed, character, currentMovement, currentPositionY, currentPositionX, isPoweredUp, score) {
   this.speed = speed;
@@ -200,6 +213,8 @@ const pacman = new PacMan(
 //Make in-game timer
 var minutes = document.getElementById("minutes");
 var seconds = document.getElementById("seconds");
+var min;
+var sec;
 
 var counter = 0;
 setInterval(setTime, 1000);
@@ -215,6 +230,13 @@ function setTime() {
     minutes.innerHTML = "0" + Math.floor(counter / 60);
   } else {
     minutes.innerHTML = Math.floor(counter / 60);
+  }
+  min = Math.floor(counter / 60);
+  sec = counter % 60;
+  if (min == 0 && sec == 20) {
+    ghosts_array[1].character.style.top = 90 + "px";
+    ghosts_array[1].character.style.left = 20 + "px";
+    pink_pass = true;
   }
 }
 
@@ -243,8 +265,8 @@ const pink = new Ghost(
   speed = 5,
   character = document.getElementById("pink_ghost"),
   color = "pink",
-  currentPositionY = 16,
-  currentPositionX = 20,
+  currentPositionY = 0,
+  currentPositionX = 0,
   gotPacman = false
 );
 
@@ -271,68 +293,168 @@ ghosts_array[1] = pink;
 ghosts_array[2] = blue;
 ghosts_array[3] = orange;
 
+var red_animations = ['red_left', 'red_right', 'red_up', 'red_down'];
+var pink_animations = ['pink_left', 'pink_right', 'pink_up', 'pink_down'];
+
 //Make Ghost Logic and Movement
+
+function BestMove(ghost, major_side, pacman_major, pacman_minor, major, minor, animations) {
+  var travelSide;
+  var coordinates;
+
+  var current_animation = animations[0];
+  if (pacman_major - major != 0) {
+    travelSide = (pacman_major - major) / Math.abs(pacman_major - major);
+    if (major_side === "x") {
+      coordinates = (major + travelSide) + "|" + minor;
+      if (non_wall_tiles.includes(coordinates)) {
+        ghost.character.style.left = (parseInt(ghost.character.style.left) + (ghost.speed * travelSide)) + "px";
+        ghost.currentPositionX += travelSide;
+        if (travelSide >= 0) {
+          current_animation = animations[1];
+        } else {
+          current_animation = animations[0];
+        }
+      }
+    } else {
+      coordinates = minor + "|" + (major + travelSide);
+      if (non_wall_tiles.includes(coordinates)) {
+        ghost.character.style.top = (parseInt(ghost.character.style.top) + (ghost.speed * travelSide)) + "px";
+        ghost.currentPositionY += travelSide;
+        if (travelSide >= 0) {
+          current_animation = animations[3];
+        } else {
+          current_animation = animations[2];
+        }
+      }
+    }
+  }
+
+  if (pacman_minor - minor != 0) {
+    travelSide = (pacman_minor - minor) / Math.abs(pacman_minor - minor);
+    if (major_side === "x") {
+      coordinates = major + "|" + (minor + travelSide);
+      if (non_wall_tiles.includes(coordinates)) {
+        ghost.character.style.top = (parseInt(ghost.character.style.top) + (ghost.speed * travelSide)) + "px";
+        ghost.currentPositionY += travelSide;
+        if (travelSide >= 0) {
+          current_animation = animations[3];
+        } else {
+          current_animation = animations[2];
+        }
+      }
+    } else {
+      coordinates = (minor + travelSide) + "|" + major;
+      if (non_wall_tiles.includes(coordinates)) {
+        ghost.character.style.left = (parseInt(ghost.character.style.left) + (ghost.speed * travelSide)) + "px";
+        ghost.currentPositionX += travelSide;
+        if (travelSide >= 0) {
+          current_animation = animations[1];
+        } else {
+          current_animation = animations[0];
+        }
+      }
+    }
+  }
+
+  ghost.character.classList.replace(red.character.classList[0], current_animation);
+
+  if (pacman_major - major == 0 && pacman_minor - minor == 0) {
+    ghost.gotPacman = true;
+    //make game over screen and pacman animation!
+  }
+}
+
+var isGoingLeft = false;
+var isGoingDown = false;
+var isGoingUp = false;
+var isGoingRight = false;
+
+function Scatter(ghost, cA, cB, cC, cD) {
+  if(ghost.currentPositionX == cA && ghost.currentPositionY == cC){
+    isGoingLeft = false;
+    isGoingDown = true;
+  }
+  if(ghost.currentPositionX == cA && ghost.currentPositionY == cB){
+    isGoingDown = false;
+    isGoingRight = true;
+  }
+  if(ghost.currentPositionX == cC && ghost.currentPositionY == cB){
+    isGoingRight = false;
+    isGoingUp = true;
+  }
+  if(ghost.currentPositionX == cC && ghost.currentPositionY == cD){
+    isGoingUp = false;
+    isGoingLeft = true;
+  }
+
+  if(isGoingLeft){
+    ghost.character.style.left = (parseInt(ghost.character.style.left) + ghost.speed) + "px";
+    ghost.currentPositionX += 1;
+  }
+  if(isGoingRight){
+    ghost.character.style.left = (parseInt(ghost.character.style.left) - ghost.speed) + "px";
+    ghost.currentPositionX -= 1;
+  }
+  if(isGoingDown){
+    ghost.character.style.top = (parseInt(ghost.character.style.top) + ghost.speed) + "px";
+    ghost.currentPositionY += 1;
+  }
+  if(isGoingUp){
+    ghost.character.style.top = (parseInt(ghost.character.style.top) - ghost.speed) + "px";
+    ghost.currentPositionY -= 1;
+  }
+
+  document.getElementById("ghost_coordinates").innerHTML = ghost.currentPositionX + "|" + ghost.currentPositionY;
+}
+
 var pacman_positionX;
 var pacman_positionY;
 
-/*function RedMovement(ghost) {
+function RedMovement(ghost, animations) {
+  //We will make the red ghost chase pacman
   pacman_positionX = pacman.currentPositionX;
   pacman_positionY = pacman.currentPositionY;
 
   if (Math.abs(pacman_positionX - ghost.currentPositionX) < Math.abs(pacman_positionY - ghost.currentPositionY)) {
-    bestMove("x", pacman_positionX, pacman_positionY, ghost.currentPositionX, ghost.currentPositionY);
+    BestMove(ghost, "x", pacman_positionX, pacman_positionY, ghost.currentPositionX, ghost.currentPositionY, animations);
+    document.getElementById("ghost_coordinates").innerHTML = ghost.currentPositionX + "|" + ghost.currentPositionY;
   } else {
-    bestMove("y", pacman_positionY, pacman_positionX, ghost.currentPositionY, ghost.currentPositionX);
+    BestMove(ghost, "y", pacman_positionY, pacman_positionX, ghost.currentPositionY, ghost.currentPositionX, animations);
+    document.getElementById("ghost_coordinates").innerHTML = ghost.currentPositionX + "|" + ghost.currentPositionY;
   }
 }
 
-function bestMove(side, pacman_major, pacman_minor, major, minor) {
-  let bestResult = -Infinity;
-  let move;
-  let travelSide;
-  if (side === "x") {
-    if (pacman_major - major == 0) {
-      travelSide = 0;
+var reset = 0;
+function PinkMovement(ghost, animations) {
+  //We will make the Pink Ghost to go "Scatter" mode and chase pacman if he is nearby, then go to "Scatter" mode again
+  //Scatter path is from 0|0 to 18|6
+  if (Math.abs(pacman.currentPositionX - ghost.currentPositionX) + Math.abs(pacman.currentPositionY - ghost.currentPositionY) < 15) {
+    if (Math.abs(pacman_positionX - ghost.currentPositionX) < Math.abs(pacman_positionY - ghost.currentPositionY)) {
+      BestMove(ghost, "x", pacman_positionX, pacman_positionY, ghost.currentPositionX, ghost.currentPositionY, animations);
     } else {
-      travelSide = (pacman_major - major) / Math.abs(pacman_major - major);
+      BestMove(ghost, "y", pacman_positionY, pacman_positionX, ghost.currentPositionY, ghost.currentPositionX, animations);
     }
-    if (tiles_array[major + travelSide][minor].isWall == 1) {
-      travelSide = (pacman_minor - minor) / Math.abs(pacman_minor - minor);
-      let result = minimax(travelSide);
-      if (result > bestResult) {
-        bestResult = result;
-        //move = {major, minor + travelSide};
-      }
-    } else {
-      if (result > bestResult) {
-        bestResult = result;
-        move = {}
-      }
-      let result = minimax(travelSide);
-    }
+    reset = 1;
   } else {
-    if (pacman_major - major == 0) {
-      travelSide = 0;
-    } else {
-      travelSide = (pacman_major - major) / Math.abs(pacman_major - major);
+    if(reset == 1){
+      console.log("done");
+      ghost.currentPositionX = 0;
+      ghost.currentPositionY = 0;
+      ghost.character.style.top = 90 + "px";
+      ghost.character.style.left = 20 + "px";
+      reset = 0;
     }
-    if (tiles_array[minor][major + travelSide].isWall == 1) {
-      travelSide = (pacman_minor - minor) / Math.abs(pacman_minor - minor);
-      //let result = minimax(travelSide);
-    } else {
-      //let result = minimax(travelSide);
-    }
+    Scatter(ghost, 18, 6, 0, 0);
   }
 }
-
-function minimax(travel, depth, isMaximizing){
-
-}*/
 
 //Make PacMan move
 var ongoing;
 var animation;
 pacman.character.classList.add('pacman_animation_left_1');
+red.character.classList.add('red_left');
+
 
 window.addEventListener("load", () => {
   pacman.character.style.position = "absolute";
@@ -341,7 +463,12 @@ window.addEventListener("load", () => {
   red.character.style.position = "absolute";
   red.character.style.left = 120 + "px";
   red.character.style.top = 170 + "px";
+  pink.character.style.position = "absolute";
+  pink.character.style.left = 104 + "px";
+  pink.character.style.top = 194 + "px";
 });
+
+
 
 let helping_coordinates = document.getElementById("pacman_coordinates");
 let score_id = document.getElementById("pacman_score");
@@ -375,7 +502,7 @@ function MovementLogic(movement) {
         }, 150);
 
         score_id.innerHTML = "Score: " + pacman.score;
-        helping_coordinates.innerHTML = pacman.currentPositionY + "|" + pacman.currentPositionX;
+        helping_coordinates.innerHTML = pacman.currentPositionX + "|" + pacman.currentPositionY;
       }
     } else if (movement === "R") {
       if (pacman.currentPositionX != 40) {
@@ -404,7 +531,7 @@ function MovementLogic(movement) {
         }, 150);
 
         score_id.innerHTML = "Score: " + pacman.score;
-        helping_coordinates.innerHTML = pacman.currentPositionY + "|" + pacman.currentPositionX;
+        helping_coordinates.innerHTML = pacman.currentPositionX + "|" + pacman.currentPositionY;
 
       }
     } else if (movement === "U") {
@@ -428,7 +555,7 @@ function MovementLogic(movement) {
         }, 150);
 
         score_id.innerHTML = "Score: " + pacman.score;
-        helping_coordinates.innerHTML = pacman.currentPositionY + "|" + pacman.currentPositionX;
+        helping_coordinates.innerHTML = pacman.currentPositionX + "|" + pacman.currentPositionY;
 
       }
     } else if (movement === "D") {
@@ -452,10 +579,9 @@ function MovementLogic(movement) {
         }, 150);
 
         score_id.innerHTML = "Score: " + pacman.score;
-        helping_coordinates.innerHTML = pacman.currentPositionY + "|" + pacman.currentPositionX;
+        helping_coordinates.innerHTML = pacman.currentPositionX + "|" + pacman.currentPositionY;
       }
     }
-    //RedMovement(ghosts_array[0]);
   }, 100);
 }
 
@@ -493,4 +619,16 @@ function Movement() {
 CreateMap("right");
 CreateMap("left");
 MakeCoins();
+AccessibleCoordinatesArray();
 Movement();
+var pink_pass = false;
+var blue_pass = false;
+var orange_pass = false;
+
+setInterval(() => {
+  RedMovement(ghosts_array[0], red_animations);
+
+  if (pink_pass) {
+    PinkMovement(ghosts_array[1], pink_animations);
+  }
+}, 150);
