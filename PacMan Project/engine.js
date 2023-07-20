@@ -238,6 +238,11 @@ function setTime() {
     ghosts_array[1].character.style.left = 20 + "px";
     pink_pass = true;
   }
+  if (min == 0 && sec == 30) {
+    ghosts_array[2].character.style.top = 90 + "px";
+    ghosts_array[2].character.style.left = 130 + "px";
+    blue_pass = true;
+  }
 }
 
 //Make Ghosts
@@ -274,8 +279,8 @@ const blue = new Ghost(
   speed = 5,
   character = document.getElementById("blue_ghost"),
   color = "blue",
-  currentPositionY = 16,
-  currentPositionX = 20,
+  currentPositionY = 0,
+  currentPositionX = 22,
   gotPacman = false
 );
 
@@ -294,7 +299,14 @@ ghosts_array[2] = blue;
 ghosts_array[3] = orange;
 
 var red_animations = ['red_left', 'red_right', 'red_up', 'red_down'];
+
 var pink_animations = ['pink_left', 'pink_right', 'pink_up', 'pink_down'];
+var LeftP = false, DownP = false, UpP = false, RightP = false;
+var pink_directions = [LeftP, DownP, UpP, RightP];
+
+var blue_animations = ['blue_left', 'blue_right', 'blue_up', 'blue_down'];
+var LeftB = false, DownB = false, UpB = false, RightB = false;
+var blue_directions = [LeftB, DownB, UpB, RightB];
 
 //Make Ghost Logic and Movement
 
@@ -357,7 +369,7 @@ function BestMove(ghost, major_side, pacman_major, pacman_minor, major, minor, a
     }
   }
 
-  ghost.character.classList.replace(red.character.classList[0], current_animation);
+  ghost.character.classList.replace(ghost.character.classList[0], current_animation);
 
   if (pacman_major - major == 0 && pacman_minor - minor == 0) {
     ghost.gotPacman = true;
@@ -365,46 +377,47 @@ function BestMove(ghost, major_side, pacman_major, pacman_minor, major, minor, a
   }
 }
 
-var isGoingLeft = false;
-var isGoingDown = false;
-var isGoingUp = false;
-var isGoingRight = false;
-
-function Scatter(ghost, cA, cB, cC, cD) {
-  if(ghost.currentPositionX == cA && ghost.currentPositionY == cC){
-    isGoingLeft = false;
-    isGoingDown = true;
+function Scatter(ghost, cA, cB, cC, cD, animations, directions) {
+  var currentAnimation = animations[0];
+  if (ghost.currentPositionX == cA && ghost.currentPositionY == cC) {
+    directions[0] = false;
+    directions[1] = true;
   }
-  if(ghost.currentPositionX == cA && ghost.currentPositionY == cB){
-    isGoingDown = false;
-    isGoingRight = true;
+  if (ghost.currentPositionX == cA && ghost.currentPositionY == cB) {
+    directions[1] = false;
+    directions[3] = true;
   }
-  if(ghost.currentPositionX == cC && ghost.currentPositionY == cB){
-    isGoingRight = false;
-    isGoingUp = true;
+  if (ghost.currentPositionX == cD && ghost.currentPositionY == cB) {
+    directions[3] = false;
+    directions[2] = true;
   }
-  if(ghost.currentPositionX == cC && ghost.currentPositionY == cD){
-    isGoingUp = false;
-    isGoingLeft = true;
+  if (ghost.currentPositionX == cD && ghost.currentPositionY == cC) {
+    directions[2] = false;
+    directions[0] = true;
   }
 
-  if(isGoingLeft){
+  if (directions[0]) {
     ghost.character.style.left = (parseInt(ghost.character.style.left) + ghost.speed) + "px";
     ghost.currentPositionX += 1;
+    currentAnimation = animations[1];
   }
-  if(isGoingRight){
+  if (directions[3]) {
     ghost.character.style.left = (parseInt(ghost.character.style.left) - ghost.speed) + "px";
     ghost.currentPositionX -= 1;
+    currentAnimation = animations[0];
   }
-  if(isGoingDown){
+  if (directions[1]) {
     ghost.character.style.top = (parseInt(ghost.character.style.top) + ghost.speed) + "px";
     ghost.currentPositionY += 1;
+    currentAnimation = animations[3];
   }
-  if(isGoingUp){
+  if (directions[2]) {
     ghost.character.style.top = (parseInt(ghost.character.style.top) - ghost.speed) + "px";
     ghost.currentPositionY -= 1;
+    currentAnimation = animations[2];
   }
 
+  ghost.character.classList.replace(ghost.character.classList[0], currentAnimation);
   document.getElementById("ghost_coordinates").innerHTML = ghost.currentPositionX + "|" + ghost.currentPositionY;
 }
 
@@ -418,15 +431,15 @@ function RedMovement(ghost, animations) {
 
   if (Math.abs(pacman_positionX - ghost.currentPositionX) < Math.abs(pacman_positionY - ghost.currentPositionY)) {
     BestMove(ghost, "x", pacman_positionX, pacman_positionY, ghost.currentPositionX, ghost.currentPositionY, animations);
-    document.getElementById("ghost_coordinates").innerHTML = ghost.currentPositionX + "|" + ghost.currentPositionY;
   } else {
     BestMove(ghost, "y", pacman_positionY, pacman_positionX, ghost.currentPositionY, ghost.currentPositionX, animations);
-    document.getElementById("ghost_coordinates").innerHTML = ghost.currentPositionX + "|" + ghost.currentPositionY;
   }
 }
 
-var reset = 0;
-function PinkMovement(ghost, animations) {
+var resetp = 0;
+var resetb = 0;
+
+function PinkMovement(ghost, animations, directions) {
   //We will make the Pink Ghost to go "Scatter" mode and chase pacman if he is nearby, then go to "Scatter" mode again
   //Scatter path is from 0|0 to 18|6
   if (Math.abs(pacman.currentPositionX - ghost.currentPositionX) + Math.abs(pacman.currentPositionY - ghost.currentPositionY) < 15) {
@@ -435,17 +448,46 @@ function PinkMovement(ghost, animations) {
     } else {
       BestMove(ghost, "y", pacman_positionY, pacman_positionX, ghost.currentPositionY, ghost.currentPositionX, animations);
     }
-    reset = 1;
+    resetp = 1;
   } else {
-    if(reset == 1){
-      console.log("done");
+    if (resetp == 1) {
       ghost.currentPositionX = 0;
       ghost.currentPositionY = 0;
       ghost.character.style.top = 90 + "px";
       ghost.character.style.left = 20 + "px";
-      reset = 0;
+      directions[0] = false;
+      directions[1] = false;
+      directions[2] = false;
+      directions[3] = false;
+      resetp = 0;
     }
-    Scatter(ghost, 18, 6, 0, 0);
+    Scatter(ghost, 18, 6, 0, 0, animations, directions);
+  }
+}
+
+function BlueMovement(ghost, animations, directions) {
+  //We will make the Blue Ghost to do the same thing as the Pink Ghost, but instead on the other side of the map
+  //Scatter path is from 22|0 to 40|6
+  if (Math.abs(pacman.currentPositionX - ghost.currentPositionX) + Math.abs(pacman.currentPositionY - ghost.currentPositionY) < 15) {
+    if (Math.abs(pacman_positionX - ghost.currentPositionX) < Math.abs(pacman_positionY - ghost.currentPositionY)) {
+      BestMove(ghost, "x", pacman_positionX, pacman_positionY, ghost.currentPositionX, ghost.currentPositionY, animations);
+    } else {
+      BestMove(ghost, "y", pacman_positionY, pacman_positionX, ghost.currentPositionY, ghost.currentPositionX, animations);
+    }
+    resetb = 1;
+  } else {
+    if(resetb == 1){
+      ghost.currentPositionX = 22;
+      ghost.currentPositionY = 0;
+      ghost.character.style.top = 90 + "px";
+      ghost.character.style.left = 130 + "px";
+      directions[0] = false;
+      directions[1] = false;
+      directions[2] = false;
+      directions[3] = false;
+      resetb = 0;
+    }
+    Scatter(ghost, 40, 6, 0, 22, animations, directions);
   }
 }
 
@@ -454,6 +496,8 @@ var ongoing;
 var animation;
 pacman.character.classList.add('pacman_animation_left_1');
 red.character.classList.add('red_left');
+pink.character.classList.add('pink_right');
+blue.character.classList.add('blue_right');
 
 
 window.addEventListener("load", () => {
@@ -466,6 +510,9 @@ window.addEventListener("load", () => {
   pink.character.style.position = "absolute";
   pink.character.style.left = 104 + "px";
   pink.character.style.top = 194 + "px";
+  blue.character.style.position = "absolute";
+  blue.character.style.left = 120 + "px";
+  blue.character.style.top = 194 + "px";
 });
 
 
@@ -629,6 +676,10 @@ setInterval(() => {
   RedMovement(ghosts_array[0], red_animations);
 
   if (pink_pass) {
-    PinkMovement(ghosts_array[1], pink_animations);
+    PinkMovement(ghosts_array[1], pink_animations, pink_directions);
   }
+  if (blue_pass) {
+    BlueMovement(ghosts_array[2], blue_animations, blue_directions);
+  }
+
 }, 150);
