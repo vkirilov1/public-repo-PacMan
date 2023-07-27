@@ -243,6 +243,15 @@ function setTime() {
     ghosts_array[2].character.style.left = 130 + "px";
     blue_pass = true;
   }
+  if (min == 0 && sec == 40) {
+    ghosts_array[3].character.style.top = 315 + "px";
+    ghosts_array[3].character.style.left = 120 + "px";
+    orange_pass = true;
+  }
+}
+
+function randomNumber(min, max) {
+  return Math.floor(Math.random() * (max - min) + min);
 }
 
 //Make Ghosts
@@ -288,7 +297,7 @@ const orange = new Ghost(
   speed = 5,
   character = document.getElementById("orange_ghost"),
   color = "orange",
-  currentPositionY = 16,
+  currentPositionY = 45,
   currentPositionX = 20,
   gotPacman = false
 );
@@ -299,13 +308,20 @@ ghosts_array[2] = blue;
 ghosts_array[3] = orange;
 
 var red_animations = ['red_left', 'red_right', 'red_up', 'red_down'];
+var orange_animations = ['orange_left', 'orange_right', 'orange_up', 'orange_down'];
 
 var pink_animations = ['pink_left', 'pink_right', 'pink_up', 'pink_down'];
-var LeftP = false, DownP = false, UpP = false, RightP = false;
+var LeftP = false,
+  DownP = false,
+  UpP = false,
+  RightP = false;
 var pink_directions = [LeftP, DownP, UpP, RightP];
 
 var blue_animations = ['blue_left', 'blue_right', 'blue_up', 'blue_down'];
-var LeftB = false, DownB = false, UpB = false, RightB = false;
+var LeftB = false,
+  DownB = false,
+  UpB = false,
+  RightB = false;
 var blue_directions = [LeftB, DownB, UpB, RightB];
 
 //Make Ghost Logic and Movement
@@ -418,7 +434,6 @@ function Scatter(ghost, cA, cB, cC, cD, animations, directions) {
   }
 
   ghost.character.classList.replace(ghost.character.classList[0], currentAnimation);
-  document.getElementById("ghost_coordinates").innerHTML = ghost.currentPositionX + "|" + ghost.currentPositionY;
 }
 
 var pacman_positionX;
@@ -476,7 +491,7 @@ function BlueMovement(ghost, animations, directions) {
     }
     resetb = 1;
   } else {
-    if(resetb == 1){
+    if (resetb == 1) {
       ghost.currentPositionX = 22;
       ghost.currentPositionY = 0;
       ghost.character.style.top = 90 + "px";
@@ -491,6 +506,81 @@ function BlueMovement(ghost, animations, directions) {
   }
 }
 
+var random_number = 1;
+var global_available_sides = [];
+var available_sides = [];
+
+function OrangeMovement(ghost, animations, random_number) {
+  //The orange ghost moves very randomly so the logic we will be using is 
+  //if the ghost is not 8 tiles or less away from pacman, he is going to move at a direction and
+  //if there is another path available to go, he is going to automatically choose it and start moving there.
+
+  if (Math.abs(pacman.currentPositionX - ghost.currentPositionX) + Math.abs(pacman.currentPositionY - ghost.currentPositionY) < 8) {
+    if (Math.abs(pacman_positionX - ghost.currentPositionX) < Math.abs(pacman_positionY - ghost.currentPositionY)) {
+      BestMove(ghost, "x", pacman_positionX, pacman_positionY, ghost.currentPositionX, ghost.currentPositionY, animations);
+    } else {
+      BestMove(ghost, "y", pacman_positionY, pacman_positionX, ghost.currentPositionY, ghost.currentPositionX, animations);
+    }
+  } else {
+    var left_pass = false;
+    var right_pass = false;
+    var up_pass = false;
+    var down_pass = false;
+    available_sides = [];
+    if (ghost.currentPositionY != 45) {
+      if (tiles_array[ghost.currentPositionX][ghost.currentPositionY + 1].isWall == 0) {
+        available_sides.push("down");
+        down_pass = true;
+      }
+    }
+    if (ghost.currentPositionY != 0) {
+      if (tiles_array[ghost.currentPositionX][ghost.currentPositionY - 1].isWall == 0) {
+        available_sides.push("up");
+        up_pass = true;
+      }
+    }
+    if (ghost.currentPositionX != 40) {
+      if (tiles_array[ghost.currentPositionX + 1][ghost.currentPositionY].isWall == 0) {
+        available_sides.push("right");
+        right_pass = true;
+      }
+    }
+    if (ghost.currentPositionX != 0) {
+      if (tiles_array[ghost.currentPositionX - 1][ghost.currentPositionY].isWall == 0) {
+        available_sides.push("left");
+        left_pass = true;
+      }
+    }
+
+    console.log(random_number);
+    if (global_available_sides[random_number] === "left") {
+      if (left_pass) {
+        ghost.character.style.left = parseInt(ghost.character.style.left) - ghost.speed + "px";
+        ghost.currentPositionX -= 1;
+        ghost.character.classList.replace(ghost.character.classList[0], animations[0]);
+      }
+    } else if (global_available_sides[random_number] === "right") {
+      if (right_pass) {
+        ghost.character.style.left = parseInt(ghost.character.style.left) + ghost.speed + "px";
+        ghost.currentPositionX += 1;
+        ghost.character.classList.replace(ghost.character.classList[0], animations[1]);
+      }
+    } else if (global_available_sides[random_number] === "up") {
+      if (up_pass) {
+        ghost.character.style.top = parseInt(ghost.character.style.top) - ghost.speed + "px";
+        ghost.currentPositionY -= 1;
+        ghost.character.classList.replace(ghost.character.classList[0], animations[2]);
+      }
+    } else if (global_available_sides[random_number] === "down") {
+      if (down_pass) {
+        ghost.character.style.top = parseInt(ghost.character.style.top) + ghost.speed + "px";
+        ghost.currentPositionY += 1;
+        ghost.character.classList.replace(ghost.character.classList[0], animations[3]);
+      }
+    }
+  }
+}
+
 //Make PacMan move
 var ongoing;
 var animation;
@@ -498,6 +588,7 @@ pacman.character.classList.add('pacman_animation_left_1');
 red.character.classList.add('red_left');
 pink.character.classList.add('pink_right');
 blue.character.classList.add('blue_right');
+orange.character.classList.add('orange_right');
 
 
 window.addEventListener("load", () => {
@@ -513,6 +604,9 @@ window.addEventListener("load", () => {
   blue.character.style.position = "absolute";
   blue.character.style.left = 120 + "px";
   blue.character.style.top = 194 + "px";
+  orange.character.style.position = "absolute";
+  orange.character.style.left = 135 + "px";
+  orange.character.style.top = 194 + "px";
 });
 
 
@@ -672,6 +766,8 @@ var pink_pass = false;
 var blue_pass = false;
 var orange_pass = false;
 
+var repeats = 0;
+
 setInterval(() => {
   RedMovement(ghosts_array[0], red_animations);
 
@@ -681,5 +777,13 @@ setInterval(() => {
   if (blue_pass) {
     BlueMovement(ghosts_array[2], blue_animations, blue_directions);
   }
-
+  if (orange_pass) {
+    if (repeats == 15) {
+      global_available_sides = available_sides;
+      random_number = randomNumber(0, global_available_sides.length);
+      repeats = 0;
+    }
+    OrangeMovement(ghosts_array[3], orange_animations, random_number);
+    repeats += 1;
+  }
 }, 150);
