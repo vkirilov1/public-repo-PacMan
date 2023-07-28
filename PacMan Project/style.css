@@ -142,6 +142,82 @@
   background: url("WholeSheet.webp") -553px -113px;
 }
 
+.pacman_death_1 {
+  width: 13px;
+  height: 14px;
+  background: url("WholeSheet.webp") -505px -2px;
+}
+
+.pacman_death_2 {
+  width: 13px;
+  height: 14px;
+  background: url("WholeSheet.webp") -521px -2px;
+}
+
+.pacman_death_3 {
+  width: 13px;
+  height: 14px;
+  background: url("WholeSheet.webp") -537px -2px;
+}
+
+.pacman_death_4 {
+  width: 13px;
+  height: 14px;
+  background: url("WholeSheet.webp") -553px -2px;
+}
+
+.pacman_death_5 {
+  width: 13px;
+  height: 14px;
+  background: url("WholeSheet.webp") -569px -2px;
+}
+
+.pacman_death_6 {
+  width: 13px;
+  height: 14px;
+  background: url("WholeSheet.webp") -585px -2px;
+}
+
+.pacman_death_7 {
+  width: 13px;
+  height: 14px;
+  background: url("WholeSheet.webp") -601px -2px;
+}
+
+.pacman_death_8 {
+  width: 13px;
+  height: 14px;
+  background: url("WholeSheet.webp") -617px -2px;
+}
+
+.pacman_death_9 {
+  width: 13px;
+  height: 14px;
+  background: url("WholeSheet.webp") -633px -2px;
+}
+
+.pacman_death_10 {
+  width: 13px;
+  height: 14px;
+  background: url("WholeSheet.webp") -649px -2px;
+}
+
+.pacman_death_11 {
+  width: 13px;
+  height: 14px;
+  background: url("WholeSheet.webp") -665px -2px;
+}
+
+.pacman_death_12 {
+  width: 13px;
+  height: 14px;
+  background: url("WholeSheet.webp") -665px -20px;
+}
+
+#reset_game {
+  visibility: hidden;
+}
+
 #game {
   width: 226px;
   height: 248px;

@@ -202,8 +202,7 @@ function PacMan(speed, character, currentMovement, currentPositionY, currentPosi
 const pacman = new PacMan(
   speed = 5,
   character = document.getElementById("pacman"),
-  //Make MovementLogic("L") later
-  currentMovement = MovementLogic("I"),
+  currentMovement = MovementLogic("L"),
   currentPositionY = 35,
   currentPositionX = 20,
   isPoweredUp = false,
@@ -215,9 +214,8 @@ var minutes = document.getElementById("minutes");
 var seconds = document.getElementById("seconds");
 var min;
 var sec;
-
+var time_interval;
 var counter = 0;
-setInterval(setTime, 1000);
 
 function setTime() {
   counter++;
@@ -387,9 +385,9 @@ function BestMove(ghost, major_side, pacman_major, pacman_minor, major, minor, a
 
   ghost.character.classList.replace(ghost.character.classList[0], current_animation);
 
-  if (pacman_major - major == 0 && pacman_minor - minor == 0) {
+  if (ghost.currentPositionX == pacman.currentPositionX && ghost.currentPositionY == pacman.currentPositionY) {
     ghost.gotPacman = true;
-    //make game over screen and pacman animation!
+    GameOver(ongoing, ghosts_interval, time_interval);
   }
 }
 
@@ -615,175 +613,250 @@ let helping_coordinates = document.getElementById("pacman_coordinates");
 let score_id = document.getElementById("pacman_score");
 
 function MovementLogic(movement) {
-  ongoing = setInterval(() => {
-    if (movement === "L") {
-      if (pacman.currentPositionX != 0) {
-        if (tiles_array[pacman.currentPositionX - 1][pacman.currentPositionY].isWall == 0) {
-          pacman.character.style.left = parseInt(pacman.character.style.left) - pacman.speed + "px";
-          pacman.currentPositionX -= 1;
-          if (tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasCoin == 1) {
-            pacman.score += 10;
-            tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasCoin = 0;
+  if (!isOver) {
+    ongoing = setInterval(() => {
+      if (movement === "L") {
+        if (pacman.currentPositionX != 0) {
+          if (tiles_array[pacman.currentPositionX - 1][pacman.currentPositionY].isWall == 0) {
+            pacman.character.style.left = parseInt(pacman.character.style.left) - pacman.speed + "px";
+            pacman.currentPositionX -= 1;
+            if (tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasCoin == 1) {
+              pacman.score += 10;
+              tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasCoin = 0;
+            }
+            if (tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasPowerUp == 1) {
+              pacman.isPoweredUp = true;
+              tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasPowerUp == 0;
+              //Make timer in which Pacman is powered up and then make pacman.isPoweredUp false!!
+            }
           }
-          if (tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasPowerUp == 1) {
-            pacman.isPoweredUp = true;
-            tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasPowerUp == 0;
-            //Make timer in which Pacman is powered up and then make pacman.isPoweredUp false!!
+          if (pacman.currentPositionX == 0 && pacman.currentPositionY == 21) {
+            pacman.currentPositionX = 40;
+            pacman.currentPositionY = 21;
+            pacman.character.style.left = 220 + "px";
+            pacman.character.style.top = 195 + "px";
           }
-        }
-        if (pacman.currentPositionX == 0 && pacman.currentPositionY == 21) {
-          pacman.currentPositionX = 40;
-          pacman.currentPositionY = 21;
-          pacman.character.style.left = 220 + "px";
-          pacman.character.style.top = 195 + "px";
-        }
-        pacman.character.classList.replace(pacman.character.classList[0], 'pacman_animation_left_1');
-        setTimeout(() => {
-          pacman.character.classList.replace(pacman.character.classList[0], 'pacman_animation_left_2')
-        }, 150);
+          pacman.character.classList.replace(pacman.character.classList[0], 'pacman_animation_left_1');
+          setTimeout(() => {
+            pacman.character.classList.replace(pacman.character.classList[0], 'pacman_animation_left_2')
+          }, 150);
 
-        score_id.innerHTML = "Score: " + pacman.score;
-        helping_coordinates.innerHTML = pacman.currentPositionX + "|" + pacman.currentPositionY;
+          score_id.innerHTML = "Score: " + pacman.score;
+          helping_coordinates.innerHTML = pacman.currentPositionX + "|" + pacman.currentPositionY;
+        }
+      } else if (movement === "R") {
+        if (pacman.currentPositionX != 40) {
+          if (tiles_array[pacman.currentPositionX + 1][pacman.currentPositionY].isWall == 0) {
+            pacman.character.style.left = parseInt(pacman.character.style.left) + pacman.speed + "px";
+            pacman.currentPositionX += 1;
+            if (tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasCoin == 1) {
+              pacman.score += 10;
+              tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasCoin = 0;
+            }
+            if (tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasPowerUp == 1) {
+              pacman.isPoweredUp = true;
+              tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasPowerUp == 0;
+              //Make timer in which Pacman is powered up and then make pacman.isPoweredUp false!!
+            }
+          }
+          if (pacman.currentPositionX == 40 && pacman.currentPositionY == 21) {
+            pacman.currentPositionX = 0;
+            pacman.currentPositionY = 21;
+            pacman.character.style.left = 20 + "px";
+            pacman.character.style.top = 195 + "px";
+          }
+          pacman.character.classList.replace(pacman.character.classList[0], 'pacman_animation_right_1');
+          setTimeout(() => {
+            pacman.character.classList.replace(pacman.character.classList[0], 'pacman_animation_right_2')
+          }, 150);
+
+          score_id.innerHTML = "Score: " + pacman.score;
+          helping_coordinates.innerHTML = pacman.currentPositionX + "|" + pacman.currentPositionY;
+
+        }
+      } else if (movement === "U") {
+        if (pacman.currentPositionY != 0) {
+          if (tiles_array[pacman.currentPositionX][pacman.currentPositionY - 1].isWall == 0) {
+            pacman.character.style.top = parseInt(pacman.character.style.top) - pacman.speed + "px";
+            pacman.currentPositionY -= 1;
+            if (tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasCoin == 1) {
+              pacman.score += 10;
+              tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasCoin = 0;
+            }
+            if (tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasPowerUp == 1) {
+              pacman.isPoweredUp = true;
+              tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasPowerUp == 0;
+              //Make timer in which Pacman is powered up and then make pacman.isPoweredUp false!!
+            }
+          }
+          pacman.character.classList.replace(pacman.character.classList[0], 'pacman_animation_up_1');
+          setTimeout(() => {
+            pacman.character.classList.replace(pacman.character.classList[0], 'pacman_animation_up_2')
+          }, 150);
+
+          score_id.innerHTML = "Score: " + pacman.score;
+          helping_coordinates.innerHTML = pacman.currentPositionX + "|" + pacman.currentPositionY;
+
+        }
+      } else if (movement === "D") {
+        if (pacman.currentPositionY != 45) {
+          if (tiles_array[pacman.currentPositionX][pacman.currentPositionY + 1].isWall == 0) {
+            pacman.character.style.top = parseInt(pacman.character.style.top) + pacman.speed + "px";
+            pacman.currentPositionY += 1;
+            if (tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasCoin == 1) {
+              pacman.score += 10;
+              tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasCoin = 0;
+            }
+            if (tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasPowerUp == 1) {
+              pacman.isPoweredUp = true;
+              tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasPowerUp == 0;
+              //Make timer in which Pacman is powered up and then make pacman.isPoweredUp false!!
+            }
+          }
+          pacman.character.classList.replace(pacman.character.classList[0], 'pacman_animation_down_1');
+          setTimeout(() => {
+            pacman.character.classList.replace(pacman.character.classList[0], 'pacman_animation_down_2')
+          }, 150);
+
+          score_id.innerHTML = "Score: " + pacman.score;
+          helping_coordinates.innerHTML = pacman.currentPositionX + "|" + pacman.currentPositionY;
+        }
       }
-    } else if (movement === "R") {
-      if (pacman.currentPositionX != 40) {
-        if (tiles_array[pacman.currentPositionX + 1][pacman.currentPositionY].isWall == 0) {
-          pacman.character.style.left = parseInt(pacman.character.style.left) + pacman.speed + "px";
-          pacman.currentPositionX += 1;
-          if (tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasCoin == 1) {
-            pacman.score += 10;
-            tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasCoin = 0;
-          }
-          if (tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasPowerUp == 1) {
-            pacman.isPoweredUp = true;
-            tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasPowerUp == 0;
-            //Make timer in which Pacman is powered up and then make pacman.isPoweredUp false!!
-          }
-        }
-        if (pacman.currentPositionX == 40 && pacman.currentPositionY == 21) {
-          pacman.currentPositionX = 0;
-          pacman.currentPositionY = 21;
-          pacman.character.style.left = 20 + "px";
-          pacman.character.style.top = 195 + "px";
-        }
-        pacman.character.classList.replace(pacman.character.classList[0], 'pacman_animation_right_1');
-        setTimeout(() => {
-          pacman.character.classList.replace(pacman.character.classList[0], 'pacman_animation_right_2')
-        }, 150);
-
-        score_id.innerHTML = "Score: " + pacman.score;
-        helping_coordinates.innerHTML = pacman.currentPositionX + "|" + pacman.currentPositionY;
-
-      }
-    } else if (movement === "U") {
-      if (pacman.currentPositionY != 0) {
-        if (tiles_array[pacman.currentPositionX][pacman.currentPositionY - 1].isWall == 0) {
-          pacman.character.style.top = parseInt(pacman.character.style.top) - pacman.speed + "px";
-          pacman.currentPositionY -= 1;
-          if (tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasCoin == 1) {
-            pacman.score += 10;
-            tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasCoin = 0;
-          }
-          if (tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasPowerUp == 1) {
-            pacman.isPoweredUp = true;
-            tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasPowerUp == 0;
-            //Make timer in which Pacman is powered up and then make pacman.isPoweredUp false!!
-          }
-        }
-        pacman.character.classList.replace(pacman.character.classList[0], 'pacman_animation_up_1');
-        setTimeout(() => {
-          pacman.character.classList.replace(pacman.character.classList[0], 'pacman_animation_up_2')
-        }, 150);
-
-        score_id.innerHTML = "Score: " + pacman.score;
-        helping_coordinates.innerHTML = pacman.currentPositionX + "|" + pacman.currentPositionY;
-
-      }
-    } else if (movement === "D") {
-      if (pacman.currentPositionY != 45) {
-        if (tiles_array[pacman.currentPositionX][pacman.currentPositionY + 1].isWall == 0) {
-          pacman.character.style.top = parseInt(pacman.character.style.top) + pacman.speed + "px";
-          pacman.currentPositionY += 1;
-          if (tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasCoin == 1) {
-            pacman.score += 10;
-            tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasCoin = 0;
-          }
-          if (tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasPowerUp == 1) {
-            pacman.isPoweredUp = true;
-            tiles_array[pacman.currentPositionX][pacman.currentPositionY].hasPowerUp == 0;
-            //Make timer in which Pacman is powered up and then make pacman.isPoweredUp false!!
-          }
-        }
-        pacman.character.classList.replace(pacman.character.classList[0], 'pacman_animation_down_1');
-        setTimeout(() => {
-          pacman.character.classList.replace(pacman.character.classList[0], 'pacman_animation_down_2')
-        }, 150);
-
-        score_id.innerHTML = "Score: " + pacman.score;
-        helping_coordinates.innerHTML = pacman.currentPositionX + "|" + pacman.currentPositionY;
-      }
-    }
-  }, 100);
+    }, 100);
+  }
 }
 
 function Movement() {
-  window.addEventListener("keyup", (pressed) => {
-    var current_element = pacman.character.classList[0];
-    switch (pressed.key) {
-      case "ArrowLeft":
-        clearInterval(ongoing);
-        pacman.currentAnimation = pacman.character.classList.replace(current_element, 'pacman_animation_left_1');
-        pacman.currentMovement = MovementLogic("L");
-        break;
+  if (!isOver) {
+    window.addEventListener("keyup", (pressed) => {
+      switch (pressed.key) {
+        case "ArrowLeft":
+          clearInterval(ongoing);
+          pacman.currentMovement = MovementLogic("L");
+          break;
 
-      case "ArrowRight":
-        clearInterval(ongoing);
-        pacman.currentAnimation = pacman.character.classList.replace(current_element, 'pacman_animation_right_1');
-        pacman.currentMovement = MovementLogic("R");
-        break;
+        case "ArrowRight":
+          clearInterval(ongoing);
+          pacman.currentMovement = MovementLogic("R");
+          break;
 
-      case "ArrowUp":
-        clearInterval(ongoing);
-        pacman.currentAnimation = pacman.character.classList.replace(current_element, 'pacman_animation_up_1');
-        pacman.currentMovement = MovementLogic("U");
-        break;
+        case "ArrowUp":
+          clearInterval(ongoing);
+          pacman.currentMovement = MovementLogic("U");
+          break;
 
-      case "ArrowDown":
-        clearInterval(ongoing);
-        pacman.currentAnimation = pacman.character.classList.replace(current_element, 'pacman_animation_down_1');
-        pacman.currentMovement = MovementLogic("D");
-        break;
-    }
-  });
+        case "ArrowDown":
+          clearInterval(ongoing);
+          pacman.currentMovement = MovementLogic("D");
+          break;
+      }
+    });
+  }
 }
 
-CreateMap("right");
-CreateMap("left");
-MakeCoins();
-AccessibleCoordinatesArray();
-Movement();
-var pink_pass = false;
-var blue_pass = false;
-var orange_pass = false;
+var isOver = false;
 
-var repeats = 0;
-
-setInterval(() => {
-  RedMovement(ghosts_array[0], red_animations);
-
-  if (pink_pass) {
-    PinkMovement(ghosts_array[1], pink_animations, pink_directions);
+function GameOver(pacman_interval, ghosts_interval, time_interval) {
+  clearInterval(pacman_interval);
+  clearInterval(ghosts_interval);
+  clearInterval(time_interval);
+  pacman.character.style.left = 120 + "px";
+  pacman.character.style.top = 265 + "px";
+  isOver = true;
+  document.getElementById("game_over").innerHTML = "Game Over!"
+  document.getElementById("game_time").innerHTML = "Total Play Time: "
+  if (min < 10) {
+    document.getElementById("minutes").innerHTML = "0" + min;
+  } else {
+    document.getElementById("minutes").innerHTML = min;
   }
-  if (blue_pass) {
-    BlueMovement(ghosts_array[2], blue_animations, blue_directions);
+  if (sec < 10) {
+    document.getElementById("seconds").innerHTML = "0" + sec;
+  } else {
+    document.getElementById("seconds").innerHTML = sec;
   }
-  if (orange_pass) {
-    if (repeats == 15) {
-      global_available_sides = available_sides;
-      random_number = randomNumber(0, global_available_sides.length);
-      repeats = 0;
+  document.getElementById("reset_game").innerHTML = "Try Again?";
+  document.getElementById("reset_game").style.visibility = "visible";
+  pacman.character.classList.replace(pacman.character.classList[0], 'pacman_death_1');
+  setTimeout(() => {
+    pacman.character.classList.replace(pacman.character.classList[0], 'pacman_death_2')
+  }, 1000);
+  setTimeout(() => {
+    pacman.character.classList.replace(pacman.character.classList[0], 'pacman_death_3')
+  }, 1300);
+  setTimeout(() => {
+    pacman.character.classList.replace(pacman.character.classList[0], 'pacman_death_4')
+  }, 1600);
+  setTimeout(() => {
+    pacman.character.classList.replace(pacman.character.classList[0], 'pacman_death_5')
+  }, 1900);
+  setTimeout(() => {
+    pacman.character.classList.replace(pacman.character.classList[0], 'pacman_death_6')
+  }, 2200);
+  setTimeout(() => {
+    pacman.character.classList.replace(pacman.character.classList[0], 'pacman_death_7')
+  }, 2500);
+  setTimeout(() => {
+    pacman.character.classList.replace(pacman.character.classList[0], 'pacman_death_8')
+  }, 2800);
+  setTimeout(() => {
+    pacman.character.classList.replace(pacman.character.classList[0], 'pacman_death_9')
+  }, 3100);
+  setTimeout(() => {
+    pacman.character.classList.replace(pacman.character.classList[0], 'pacman_death_10')
+  }, 3400);
+  setTimeout(() => {
+    pacman.character.classList.replace(pacman.character.classList[0], 'pacman_death_11')
+  }, 3700);
+  setTimeout(() => {
+    pacman.character.classList.replace(pacman.character.classList[0], 'pacman_death_12')
+  }, 4000);
+}
+
+var ghosts_interval;
+var pink_pass;
+var blue_pass;
+var orange_pass;
+
+function Game() {
+  CreateMap("right");
+  CreateMap("left");
+  MakeCoins();
+  AccessibleCoordinatesArray();
+  Movement();
+  pink_pass = false;
+  blue_pass = false;
+  orange_pass = false;
+
+  var repeats = 0;
+
+  time_interval = setInterval(setTime, 1000);
+
+  ghosts_interval = setInterval(() => {
+    RedMovement(ghosts_array[0], red_animations);
+
+    if (pink_pass) {
+      PinkMovement(ghosts_array[1], pink_animations, pink_directions);
     }
-    OrangeMovement(ghosts_array[3], orange_animations, random_number);
-    repeats += 1;
-  }
-}, 150);
+    if (blue_pass) {
+      BlueMovement(ghosts_array[2], blue_animations, blue_directions);
+    }
+    if (orange_pass) {
+      if (repeats == 15) {
+        global_available_sides = available_sides;
+        random_number = randomNumber(0, global_available_sides.length);
+        repeats = 0;
+      }
+      OrangeMovement(ghosts_array[3], orange_animations, random_number);
+      repeats += 1;
+    }
+  }, 150);
+}
+
+function ResetGame(){
+  location.reload();
+  document.getElementById("reset_game").style.visibility = "hidden";
+}
+
+document.getElementById("reset_game").onclick = function() {ResetGame()};
+Game();
